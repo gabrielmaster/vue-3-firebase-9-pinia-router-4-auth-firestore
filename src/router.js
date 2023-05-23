@@ -16,6 +16,7 @@ const requireAuth = async (to, from, next) => {
 
 const routes = [
     { path: '/', component: () => import('./views/Home.vue'), beforeEnter: requireAuth },
+    { path: '/editar/:id', component: () => import('./views/Editar.vue'), beforeEnter: requireAuth },
     { path: '/login', component: () => import('./views/Login.vue') },
     { path: '/register', component: () => import('./views/Register.vue') },
 ];
