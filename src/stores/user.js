@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, sendEmailVerification } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import router from '../router';
 import { useDatabaseStore } from './database';
@@ -15,11 +15,13 @@ export const useUserStore = defineStore("user", {
         async registerUser(email, password){
             this.loadingUser = true;
             try {
-                const { user }  = await createUserWithEmailAndPassword(auth, email, password);
-                this.userData = { email: user.email, uid: user.uid };
-                router.push('/');
+                await createUserWithEmailAndPassword(auth, email, password);
+                // await sendEmailVerification(auth.currentUser);
+                router.push('/login');
             } catch (error) {
                 console.log(error);
+                this.userData = {};
+                return error.code;
             } finally {
                 this.loadingUser = false;
             }
@@ -32,7 +34,8 @@ export const useUserStore = defineStore("user", {
                 this.userData = { email: user.email, uid: user.uid };
                 router.push('/');
             } catch (error) {
-                console.log(error);
+                // console.log(error.code);
+                return error.code;
             } finally {
                 this.loadingUser = false;
             }
@@ -56,11 +59,13 @@ export const useUserStore = defineStore("user", {
 
                 const unsuscribe = onAuthStateChanged(auth, (user)=> {
 
-                    if(user){
+                    // if(user && user.emailVerified){                        
+                    if(user){                        
                         this.userData = { email: user.email, uid: user.uid };
                     }else {
                         const databaseStore = useDatabaseStore();
-                        databaseStore.$reset();
+                        databaseStore.$reset();                        
+                        // this.logoutUser();
                         this.userData = null;
                     }
                     resolve(user);

@@ -9,6 +9,7 @@ export const useDatabaseStore = defineStore("database", {
     state: () => ({
         document: [],
         loadingDoc: false,
+        loading: false,
     }),
     actions: {
 
@@ -40,7 +41,7 @@ export const useDatabaseStore = defineStore("database", {
 
         },
         async addUrls(name){
-
+            this.loading = true;
             try {
                 const objectoDoc = {
                         name: name,
@@ -51,8 +52,9 @@ export const useDatabaseStore = defineStore("database", {
                 this.document.push({ id: docRef.id, ...objectoDoc });
             } catch (error) {
                 console.log(error);
+                return error.code;
             } finally {
-
+                this.loading = false;
             }
 
         },
@@ -80,7 +82,7 @@ export const useDatabaseStore = defineStore("database", {
 
         },
         async updateUrl(id, name){
-         this.loadingDoc = true;
+         this.loading = true;
          try {
             const docRef = doc(db, 'urls', id);
             const docSnap = await getDoc(docRef);
@@ -101,12 +103,12 @@ export const useDatabaseStore = defineStore("database", {
          } catch (error) {
             console.log(error.message);
          } finally {
-            this.loadingDoc = false;
+            this.loading = false;
          }
         
         },
         async deleteUrl(id){
-
+            this.loading = true;
             try {
                 const docRef = doc(db, 'urls', id);
                 const docSnap = await getDoc(docRef);
@@ -123,8 +125,9 @@ export const useDatabaseStore = defineStore("database", {
                 }  
             } catch (error) {
                 console.log(error);
+                return error.message;
             } finally {
-
+                this.loading = false;
             }
 
         }

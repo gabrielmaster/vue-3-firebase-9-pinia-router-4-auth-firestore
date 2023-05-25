@@ -15,10 +15,10 @@ const requireAuth = async (to, from, next) => {
 };
 
 const routes = [
-    { path: '/', component: () => import('./views/Home.vue'), beforeEnter: requireAuth },
-    { path: '/editar/:id', component: () => import('./views/Editar.vue'), beforeEnter: requireAuth },
-    { path: '/login', component: () => import('./views/Login.vue') },
-    { path: '/register', component: () => import('./views/Register.vue') },
+    { path: '/', component: () => import('./views/Home.vue'), beforeEnter: requireAuth, name: 'home' },
+    { path: '/editar/:id', component: () => import('./views/Editar.vue'), beforeEnter: requireAuth, name: 'editar' },
+    { path: '/login', component: () => import('./views/Login.vue'), name: 'login' },
+    { path: '/register', component: () => import('./views/Register.vue'), name: 'register' },
 ];
 
 const history = createWebHistory();
